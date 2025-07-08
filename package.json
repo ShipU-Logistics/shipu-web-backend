@@ -21,13 +21,16 @@
   "homepage": "https://github.com/ShipU-Logistics/shipu-web-backend#readme",
   "dependencies": {
     "@prisma/client": "^6.11.1",
+    "cookie": "^1.0.2",
     "cookie-parser": "^1.4.7",
-    "dotenv": "^17.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.1.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.1",
     "morgan": "^1.10.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "parser": "^0.1.4"
   },
   "devDependencies": {
     "prisma": "^6.11.1"

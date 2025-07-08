@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -14,7 +8,87 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+  STAFF
+}
+
+enum shipmentsStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+  RETURNED
+  LOST
+  DAMAGED
+  DELAYED
+  ON_HOLD
+  OUT_FOR_DELIVERY
+  FAILED_DELIVERY
+  RESCHEDULED
+  PICKED_UP
+  READY_FOR_PICKUP
+}
+
 model User {
-  name String
-  id   String @id @default(cuid())
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  phone     String     @unique
+  address   String
+  city      String
+  state     String
+  role      String     @default("USER")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  shipments Shipment[]
+}
+
+model Shipment {
+  id          Int             @id @default(autoincrement())
+  trackingId  String
+  origin      String
+  destination String
+  weight      Float
+  status      shipmentsStatus @default(PENDING)
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id])
+
+  warehouseId Int
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+
+  vehicleId Int
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+
+  Transportation Transportation[]
+}
+
+model Warehouse {
+  id             Int              @id @default(autoincrement())
+  location       String
+  capacity       Int
+  shipments      Shipment[]
+  Transportation Transportation[]
+}
+
+model Vehicle {
+  id             Int              @id @default(autoincrement())
+  type           String
+  numberPlate    String
+  driverName     String
+  status         String           @default("AVAILABLE")
+  shipments      Shipment[]
+  Transportation Transportation[]
+}
+
+model Transportation {
+  id          Int       @id @default(autoincrement())
+  shipmentId  Int
+  vehicleId   Int
+  warehouseId Int
+  shipment    Shipment  @relation(fields: [shipmentId], references: [id])
+  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id])
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
 }
