@@ -1,13 +1,26 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import { config } from 'dotenv';
 import express from 'express';
-import userRoutes from './routes/user.routes.js';
+import userRouter from './routes/user.routes.js';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
-app.use('/api', userRoutes);
+app.use(cookieParser());
+app.use(morgan('dev'));
+app.use(
+  cors({
+    origin: '*',
+    credentials: true,
+  })
+);
+
+// router
+app.use('/api', userRouter);
 
 app.get('/', (req, res) => {
   res.send('hey !');
