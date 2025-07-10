@@ -10,9 +10,6 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
-<<<<<<< HEAD
-app.use('/', userRoutes);
-=======
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(
@@ -24,7 +21,6 @@ app.use(
 
 // router
 app.use('/api', userRouter);
->>>>>>> f2ff2ba20788986c95fb20c0b53a58444818e35d
 
 app.get('/', (req, res) => {
   res.send('hey !');
