@@ -22,6 +22,7 @@
   "homepage": "https://github.com/ShipU-Logistics/shipu-web-backend#readme",
   "dependencies": {
     "@prisma/client": "^6.11.1",
+    "bcryptjs": "^3.0.2",
     "cookie": "^1.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

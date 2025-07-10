@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
-app.use('/api', userRoutes);
+app.use('/', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('hey !');
