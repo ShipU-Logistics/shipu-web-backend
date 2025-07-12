@@ -1,5 +1,8 @@
 import prisma from '../utils/prismaClient.js';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import JWT from 'jsonwebtoken';
+import {sendMail} from '../utils/nodemail.js';
 
 
 export const createUser = async (req, res, next) => {
@@ -12,7 +15,7 @@ export const createUser = async (req, res, next) => {
         password: password,
         phone: phone,
       },
-    });
+    });  
     res.status(201).json(newUser);
   } catch (error) {
     console.error('Error in createUser', error);
@@ -21,9 +24,9 @@ export const createUser = async (req, res, next) => {
 };
 //register user
 export const registerUser = async (req, res, next) => {
-  const {name, email,password} = req.body;
+  const {name, email,password,phone} = req.body;
   
-  if(!name || !email || !password) {
+  if(!name || !email || !password || !phone ) {
     return 
     res.status(400).json({error: "please fill your name email and password" });
   }
@@ -31,18 +34,45 @@ export const registerUser = async (req, res, next) => {
   const existingUser = await prisma.user.findunique({
     where: {email},
   });
-  if(existingUser) {
+  if(existingUser) { 
     return 
-    res.status(401).json({ error: "Email is already registered" });
+    res.status(409).json({ error: "Email is already registered" });
   }
 
   //hashing the password
   const hashedPassword = await bcrypt.hash(password, 10);
-  
+
+
+  const otp = crypto.randomInt(100000, 999999).toString();
+  const expiry = new Date(Date.now()+ 10*60*1000);
+
   const user = await prisma.user.create({
-    data:{name, email, password:hashedPassword},
+    data:{name, email, password:hashedPassword , phone,otp, otpExpiry:expiry},
   });
-}
+
+  await sendMail(email, `Your OTP `,`Your OTP is ${otp}`);
+  res.json({error:"OTP sent to your email"});
+};
+const verifyOtp = async (req,res,next) => {
+  const {email,otp} = req.body;
+
+  const user = await prisma.user.findunique(
+    {where:{email}}
+  );
+  if (user || user.otp !== otp || user.otpExpiry < new Date()){
+    return
+    res.status(400).json({error:"Invalid or expired OTP"});
+  }
+  await prisma.user.update({
+    where:{email},
+    data:{isVerified:true,otp:null,otpExpiry:null}
+  });
+  res.json({error:"email verified and you are registered successfully now you can log in"});
+  }
+
+  const loginUser = async (req,res,next) => {
+    const {email,password} = req.body;
+  }
 
 
 

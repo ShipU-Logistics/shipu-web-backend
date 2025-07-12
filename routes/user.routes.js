@@ -1,12 +1,12 @@
-import { getAllUsers,registerUser, createUser } from '../controllers/user.controller.js';
+import { getAllUsers,registerUser, createUser ,} from '../controllers/user.controller.js';
 import { Router } from 'express';
 
-const router = express.Router();
+const userRouter = express.Router();
 
 
-router.post('/users', createUser);
-router.post('/users',registerUser);
-router.get('/users', getAllUsers );
+userRouter.post('/users', createUser);
+userRouter.post('/users',registerUser);
+userRouter.get('/users', getAllUsers );
 
 
 export default userRouter;
