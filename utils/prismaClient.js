@@ -1,11 +1,11 @@
-import { Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis;
 
 let prisma;
 
 if (!globalForPrisma.prisma) {
-  globalForPrisma.prisma = new Prisma();
+  globalForPrisma.prisma = new PrismaClient();
 }
 
 prisma = globalForPrisma.prisma;
