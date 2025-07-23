@@ -131,9 +131,18 @@ export const verifyOtp = async (req,res,next) => {
   //forgot Password 
   export const forgetPassword = async(req,res,next)=>{
     const {email} = req.body;
-    if(!email){
-      return res.status(400).json({error: 'Email is required'});
+    const user = await prisma.user.findUnique({where:{email}});
+    if(!user){
+      return res.status(400).json({error: 'User not found'});
       
+      const token = JWT.sign({userId:user.id}, JWT_SECRET,{expiresIn:'7d'});
+      await prisma.user.update({
+        where:{email},
+        data: {
+          resetToken:token,
+          resetTokenExpiry:new Date(Date.now() +15*60*1000),
+        },
+      });
     }
   }
 
