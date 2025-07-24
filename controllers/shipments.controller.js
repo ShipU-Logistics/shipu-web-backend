@@ -1,4 +1,3 @@
-import prisma from '../utils/prismaClient.js';
 
 export const createShipments = async (req, res, next) =>{
     try{

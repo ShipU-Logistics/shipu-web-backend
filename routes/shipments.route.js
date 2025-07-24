@@ -1,12 +1,12 @@
 import { createShipments,getAllShipments,getShipmentById,updateShipmentStatus,deleteShipment } from "../controllers/shipments.controller.js";
 import { Router } from "express";
 
-const shipmentsRouter = Expression.Router()
+const shipmentsRouter = Router()
 
-shipmentsRouter.post('/',createShipments);
-shipmentsRouter.get('/',getAllShipments);
-shipmentsRouter.get('/',getShipmentById);
-shipmentsRouter.put('/',updateShipmentStatus);
-shipmentsRouter.delete('/',deleteShipment);
+shipmentsRouter.post('/createshipment',createShipments);
+shipmentsRouter.get('/getall',getAllShipments);
+shipmentsRouter.get('/getshipment',getShipmentById);
+shipmentsRouter.put('/update',updateShipmentStatus);
+shipmentsRouter.delete('/delete',deleteShipment);
 
 export default shipmentsRouter;
