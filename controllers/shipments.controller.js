@@ -1,4 +1,4 @@
-
+import { Prisma } from "@prisma/client";
 export const createShipments = async (req, res, next) =>{
     try{
         const{trackingId,origin,destination,weight,status,userId,warehouseId,vehicleId}=req.body;

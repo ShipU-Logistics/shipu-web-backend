@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import JWT from 'jsonwebtoken';
 import { sendMail } from '../utils/nodemail.js';
+import prisma from '../utils/prismaClient.js';
 
 const cookieOption = {
   httpOnly: true,
