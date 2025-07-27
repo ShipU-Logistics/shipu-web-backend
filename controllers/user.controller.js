@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import JWT from 'jsonwebtoken';
 import { sendMail } from '../utils/nodemail.js';
-import prisma from '../utils/prismaClient.js';
+import { prisma } from '../utils/prismaClient.js';
 
 const cookieOption = {
   httpOnly: true,
@@ -38,7 +38,7 @@ export const registerUser = async (req, res, next) => {
     return res.status(400).json({ error: "please fill your name email and password" });
   }
   //check if user's email is already registered or not    
-  const existingUser = await prisma.user.findunique({
+  const existingUser = await prisma.user.findUnique({
     where: { email },
   });
   if (existingUser) {
@@ -62,7 +62,7 @@ export const registerUser = async (req, res, next) => {
 export const verifyOtp = async (req, res, next) => {
   const { email, otp } = req.body;
 
-  const user = await prisma.user.findunique(
+  const user = await prisma.user.findUnique(
     { where: { email } }
   );
 
