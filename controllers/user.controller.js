@@ -178,9 +178,9 @@ export const verifyOtpController = async (req, res) => {
 export const createAddress = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { address, city, state } = req.body;
+    const { address, city, state, pincode, landmark, type } = req.body;
 
-    if (!address || !city || !state) {
+    if (!address || !city || !state || !pincode || !landmark || !type) {
       return res.status(400).json({ error: "Please fill all required fields." });
     }
 
@@ -190,6 +190,9 @@ export const createAddress = async (req, res) => {
         address,
         city,
         state,
+        pincode,
+        landmark,
+        type,
       },
     });
 
@@ -203,6 +206,9 @@ export const createAddress = async (req, res) => {
         address: updatedUser.address,
         city: updatedUser.city,
         state: updatedUser.state,
+        pincode: updatedUser.pincode,
+        landmark: updatedUser.landmark, 
+        
       },
     });
   } catch (err) {
