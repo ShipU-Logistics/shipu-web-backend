@@ -4,7 +4,6 @@ import userRouter from './routes/user.routes.js';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import shipmentsRouter from './routes/shipments.route.js';
 config();
 
 const app = express();
@@ -15,14 +14,13 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:5173',
     credentials: true,
   })
 );
 
 // router
 app.use('/api', userRouter);
-app.use('/api',shipmentsRouter);
 
 app.get('/', (req, res) => {
   res.send('hey !');

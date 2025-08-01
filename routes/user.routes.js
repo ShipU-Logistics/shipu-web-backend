@@ -1,15 +1,13 @@
-import { getAllUsers,registerUser, createUser ,verifyOtp,loginUser,logoutUser,forgetPassword} from '../controllers/user.controller.js';
+import { registerUser, loginUser, sendOtpController, verifyOtpController, createAddress } from '../controllers/user.controller.js';
 import { Router } from 'express';
+import { authenticate } from '../middleware/auth.js';
 
 const userRouter = Router();
 
-
-userRouter.post('/users', createUser);
-userRouter.post('/register',registerUser);
-userRouter.get('/all', getAllUsers );
-userRouter.post('/verify',verifyOtp);
+userRouter.post('/register', registerUser);
 userRouter.post('/login', loginUser);
-userRouter.post('/logout', logoutUser);
-userRouter.post('/forget-password', forgetPassword);
+userRouter.post('/send-otp', sendOtpController);
+userRouter.post('/verify-otp', verifyOtpController);
+userRouter.put('/address', authenticate, createAddress);
 
 export default userRouter;
