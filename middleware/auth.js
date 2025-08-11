@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export const authenticate = (req, res, next) => {
+const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   const token = authHeader?.startsWith('Bearer ')
@@ -20,3 +20,21 @@ export const authenticate = (req, res, next) => {
   }
 };
 
+//Check role 
+const authorizedRole = (...roles) => {
+  return async (req, res, next) => {
+    const userRole = req.user?.role;
+
+    if (!userRole || !roles.includes(userRole)) {
+      return res.status(403).json({
+        message: 'You do not have permission.',
+        success: false,
+        error: true,
+      });
+    }
+
+    next();
+  };
+};
+
+export { authenticate, authorizedRole };

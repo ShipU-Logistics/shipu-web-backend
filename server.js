@@ -1,6 +1,9 @@
 import { config } from 'dotenv';
 import express from 'express';
 import userRouter from './routes/user.routes.js';
+import shipmentRouter from './routes/shipments.route.js';
+import vehicleRouter from './routes/vehicle.routes.js';
+import warehouseRouter from './routes/warehouse.routes.js';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -21,6 +24,9 @@ app.use(
 
 // router
 app.use('/api', userRouter);
+app.use('/api',shipmentRouter);
+app.use('/api',vehicleRouter);
+app.use('/api',warehouseRouter);
 
 app.get('/', (req, res) => {
   res.send('hey !');
