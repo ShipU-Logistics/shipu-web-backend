@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../utils/prismaClient.js';
 import { generateToken } from '../utils/generateToken.js';
 import { sendOtpViaTwilio, verifyOtpViaTwilio } from '../utils/twilio.js';
-import {mailer} from '../utils/nodemailer.js';
+import { mailer } from '../utils/nodemailer.js';
 
 const cookieOption = {
   httpOnly: true,
@@ -11,31 +11,28 @@ const cookieOption = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
-// Register user 
+// Register user
 export const registerUser = async (req, res, next) => {
   try {
     const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password || !phone) {
-      return res.status(400).json({ error: "Please fill all required fields." });
+      return res.status(400).json({ error: 'Please fill all required fields.' });
     }
 
     // Check for existing email or phone
     const existingUser = await prisma.user.findFirst({
       where: {
-        OR: [
-          { email },
-          { phone }
-        ]
-      }
+        OR: [{ email }, { phone }],
+      },
     });
 
     if (existingUser) {
       if (existingUser.email === email) {
-        return res.status(409).json({ error: "Email is already registered." });
+        return res.status(409).json({ error: 'Email is already registered.' });
       }
       if (existingUser.phone === phone) {
-        return res.status(409).json({ error: "Phone number is already registered." });
+        return res.status(409).json({ error: 'Phone number is already registered.' });
       }
     }
 
@@ -50,7 +47,7 @@ export const registerUser = async (req, res, next) => {
       },
     });
 
-        const token = generateToken(user);
+    const token = generateToken(user);
     if (!token) {
       return res.status(402).json({
         message: 'Token not generated',
@@ -61,7 +58,7 @@ export const registerUser = async (req, res, next) => {
     res.cookie('token', token, cookieOption);
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: 'User registered successfully',
       token,
       user: {
         id: user.id,
@@ -69,39 +66,36 @@ export const registerUser = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
       },
+      success: true,
     });
   } catch (error) {
-    console.error("Registration error:", error);
-    res.status(500).json({ error: "Internal server error." });
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Internal server error.' });
   }
 };
-
 
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ error: "Email/Phone and password are required." });
+      return res.status(400).json({ error: 'Email/Phone and password are required.' });
     }
 
     const user = await prisma.user.findFirst({
       where: {
-        OR: [
-          { email: email },
-          { phone: email }
-        ]
-      }
+        OR: [{ email: email }, { phone: email }],
+      },
     });
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials." });
+      return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid credentials." });
+      return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
     const token = generateToken(user);
@@ -115,7 +109,7 @@ export const loginUser = async (req, res) => {
     res.cookie('token', token, cookieOption);
 
     return res.status(200).json({
-      message: "Login successful",
+      message: 'Login successful',
       token,
       user: {
         id: user.id,
@@ -126,8 +120,8 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({ error: "Internal server error." });
+    console.error('Login error:', error);
+    return res.status(500).json({ error: 'Internal server error.' });
   }
 };
 
@@ -146,7 +140,7 @@ export const logoutUser = async (req, res) => {
     success: true,
     error: false,
   });
-}
+};
 
 //Delete user account
 export const deleteUserAccount = async (req, res) => {
@@ -197,7 +191,6 @@ export const sendOtpController = async (req, res) => {
   }
 };
 
-
 //verify otp
 export const verifyOtpController = async (req, res) => {
   try {
@@ -227,7 +220,7 @@ export const createAddress = async (req, res) => {
     const { address, city, state, pincode, landmark, type } = req.body;
 
     if (!address || !city || !state || !pincode || !landmark || !type) {
-      return res.status(400).json({ error: "Please fill all required fields." });
+      return res.status(400).json({ error: 'Please fill all required fields.' });
     }
 
     const updatedUser = await prisma.user.update({
@@ -243,7 +236,7 @@ export const createAddress = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Address updated successfully",
+      message: 'Address updated successfully',
       user: {
         id: updatedUser.id,
         name: updatedUser.name,
@@ -253,13 +246,12 @@ export const createAddress = async (req, res) => {
         city: updatedUser.city,
         state: updatedUser.state,
         pincode: updatedUser.pincode,
-        landmark: updatedUser.landmark, 
-        
+        landmark: updatedUser.landmark,
       },
     });
   } catch (err) {
-    console.error("Address update error:", err);
-    return res.status(500).json({ error: "Failed to update address", detail: err.message });
+    console.error('Address update error:', err);
+    return res.status(500).json({ error: 'Failed to update address', detail: err.message });
   }
 };
 // delete address
@@ -268,7 +260,7 @@ export const deleteAddress = async (req, res) => {
     const userId = req.user.id;
 
     if (!userId) {
-      return res.status(400).json({ error: "User ID is required." });
+      return res.status(400).json({ error: 'User ID is required.' });
     }
 
     const updatedUser = await prisma.user.update({
@@ -284,7 +276,7 @@ export const deleteAddress = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Address deleted successfully",
+      message: 'Address deleted successfully',
       user: {
         id: updatedUser.id,
         name: updatedUser.name,
@@ -293,8 +285,8 @@ export const deleteAddress = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Delete address error:", err);
-    return res.status(500).json({ error: "Failed to delete address", detail: err.message });
+    console.error('Delete address error:', err);
+    return res.status(500).json({ error: 'Failed to delete address', detail: err.message });
   }
 };
 
@@ -346,8 +338,3 @@ export const forgotPassword = async (req, res) => {
     return res.status(500).json({ error: 'Failed to send OTP', detail: error.message });
   }
 };
-
-
-
-
-

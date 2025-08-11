@@ -23,10 +23,10 @@ app.use(
 );
 
 // router
-app.use('/api', userRouter);
-app.use('/api',shipmentRouter);
-app.use('/api',vehicleRouter);
-app.use('/api',warehouseRouter);
+app.use('/api/user', userRouter);
+app.use('/api/shipment', shipmentRouter);
+app.use('/api/vehicle', vehicleRouter);
+app.use('/api/warehouse', warehouseRouter);
 
 app.get('/', (req, res) => {
   res.send('hey !');
