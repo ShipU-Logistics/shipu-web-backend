@@ -39,28 +39,41 @@ export const getAllVehicles = async (req,res)=>{
 
 //get vehicles by id
 
-export const getVehicleById = async (req,res) => {
-  try{
-    const{id}=req.params;
+export const getVehicleById = async (req, res) => {
+  try {
+    const { id } = req.params;
     const vehicle = await prisma.vehicle.findUnique({
-      where:{id:parseInt(id)},
-      include:{
-        shipments:true,
-        Transportation:true,
-      }
+      where: { id: vehicle },
+      include: {
+        shipments: true,
+        Transportation: true,
+      },
     });
-    if(!vehicle){
-      return res.status(404).json({message:"Vehicle not found",success:false});
+
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found", success: false });
     }
-    return res.status(201).json({message:"get single vehicle by id",success:true,data:vehicle});
-  }catch(error){
-      return res.status(500).json({message:error,success:false});
+
+    return res.status(200).json({
+      message: "Vehicle retrieved successfully",
+      success: true,
+      data: vehicle,
+    });
+
+  } catch (error) {
+    console.error("Error retrieving vehicle:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      success: false,
+      error: error.message,
+    });
   }
-}
+};
+
 
 // Update Vehicle by ID
 
-/*export const updateVehicleById = async (req, res) => {
+export const updateVehicleById = async (req, res) => {
   try {
     const { id } = req.params;
     const { type, numberPlate, driverName, status } = req.body;
@@ -85,4 +98,4 @@ export const getVehicleById = async (req,res) => {
   } catch (error) {
     return res.status(500).json({ message: error, success: false });
   }
-};*/
+};
